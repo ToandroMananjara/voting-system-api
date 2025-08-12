@@ -1,0 +1,9 @@
+
+model Vote {
+  id         Int      @id @default(autoincrement())
+  candidatId Int
+  
+  candidat   Candidat @relation(fields: [candidatId], references: [id])
+
+  createdAt  DateTime @default(now())
+}

@@ -6,6 +6,9 @@ import { AppConfigModule } from '@/common/modules/config/config.module';
 
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { ImportModule } from './import/import.module';
+import { CandidatModule } from './candidat/candidat.module';
+import { VoteModule } from './vote/vote.module';
 
 @Global()
 @Module({
@@ -20,9 +23,12 @@ import { UserModule } from './user/user.module';
         global: true,
       }),
     }),
+    ImportModule,
 
     AuthModule,
     UserModule,
+    CandidatModule,
+    VoteModule,
   ],
   providers: [],
   exports: [JwtModule],

@@ -1,7 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '@/modules/user/user.service';
-import { comparePasswords } from '@/common/utils/crypte';
 import { CreateUserDto } from '@/modules/user/dto/create-user.dto';
 import { SessionResponse, Token } from './types/session-response.type';
 import { AuthPayload } from './types/auth-payload.type';
@@ -16,11 +15,11 @@ export class AuthService {
   ) {}
 
   private generateSession(user: CreateUserDto & { id: string }): Token {
-    const { id, email, role } = user;
+    const { numeroInscription, role } = user;
 
     const payload: AuthPayload = {
-      sub: id,
-      email: email,
+      sub: user.id,
+      numeroInscription: numeroInscription,
       role: role,
     };
 
@@ -44,15 +43,13 @@ export class AuthService {
     };
   }
 
-  async signin(email: string, password: string): Promise<SessionResponse> {
-    const user = await this.usersService.getByEmail(email);
+  async signin(numeroInscription: string): Promise<SessionResponse> {
+    const user =
+      await this.usersService.getByNumeroInscription(numeroInscription);
     if (!user) {
-      throw new UnauthorizedException("L'email n'existe pas");
+      throw new UnauthorizedException("Le numéro d'inscription n'existe pas");
     }
-    const isPasswordValid = await comparePasswords(password, user.password);
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('Mot de passe incorrect');
-    }
+
     const safeUser = {
       ...user,
       password: undefined,
@@ -74,7 +71,7 @@ export class AuthService {
 
     const newPayload: AuthPayload = {
       sub: payload.sub,
-      email: payload.email,
+      numeroInscription: payload.numeroInscription,
       role: payload.role,
     };
 

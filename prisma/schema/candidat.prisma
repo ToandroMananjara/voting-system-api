@@ -1,0 +1,10 @@
+model Candidat {
+  id            Int    @id @default(autoincrement())
+  name          String
+  userId       String @unique
+  user         User   @relation(fields: [userId], references: [id])
+  photo_profile String?
+  votes        Vote[]
+
+  @@map("candidats")
+}
