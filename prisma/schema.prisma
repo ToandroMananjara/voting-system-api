@@ -1,0 +1,52 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Admin {
+  id        Int        @id @default(autoincrement())
+  username  String     @unique
+  password  String
+  elections Election[]
+}
+
+model Election {
+  id         Int         @id @default(autoincrement())
+  name       String
+  start_date DateTime?
+  end_date   DateTime?
+  admin_id   Int
+  admin      Admin       @relation(fields: [admin_id], references: [id])
+  candidates Candidate[]
+  voters     Voter[]
+  votes      Vote[]
+}
+
+model Candidate {
+  id          Int      @id @default(autoincrement())
+  election_id Int
+  name        String
+  image_path  String?
+  election    Election @relation(fields: [election_id], references: [id])
+  votes       Vote[]
+}
+
+model Voter {
+  id          Int      @id @default(autoincrement())
+  election_id Int
+  has_voted   Boolean  @default(false)
+  image_path  String?
+  election    Election @relation(fields: [election_id], references: [id])
+}
+
+model Vote {
+  id           Int       @id @default(autoincrement())
+  election_id  Int
+  candidate_id Int
+  election     Election  @relation(fields: [election_id], references: [id])
+  candidate    Candidate @relation(fields: [candidate_id], references: [id])
+}
